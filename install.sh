@@ -54,7 +54,7 @@ swapon "${diskname}2"
 
 mount "${diskname}1" /mnt
 
-pacstrap /mnt base linux linux-firmawre
+pacstrap /mnt base linux linux-firmware
 
 genfstab -U /mnt >> /mnt/etc/fstab
 
