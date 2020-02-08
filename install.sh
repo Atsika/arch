@@ -28,10 +28,12 @@ ext4size=$(($disksize-$swapsize))
 fdisk $diskname << FDISK
 o
 n
+p
 1
 
 +$((ext4size))MiB
 n
+p
 2
 
 
