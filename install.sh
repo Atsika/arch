@@ -15,7 +15,7 @@ timedatectl set-ntp true
 diskname=$(fdisk -l | grep /dev/sd* | awk -F " " {'print $2'})
 diskname="${diskname//:}"
 
-echo $diskname
+echo "$diskname"
 
 # get disk size
 disksize=$(fdisk -l | grep $((diskname)) | awk -F " " {'print $5'})
