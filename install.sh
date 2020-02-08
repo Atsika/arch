@@ -26,7 +26,7 @@ ext4size=$(($disksize-$swapsize))
 
 
 fdisk $diskname << FDISK
-d
+o
 n
 1
 
