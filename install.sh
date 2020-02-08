@@ -22,6 +22,6 @@ disksize=$(fdisk -l | grep $diskname | awk -F " " {'print $5'})
 # get ram size
 swapsize=$(free --si | grep Mem | awk -F " " {'print $2'})
 
-ext4size=$($disksize-$swapsize)
+ext4size=$(($disksize-$swapsize))
 
 echo $ext4size
