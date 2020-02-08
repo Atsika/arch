@@ -24,4 +24,21 @@ swapsize=$(free --si --mega | grep Mem | awk -F " " {'print $2'})
 
 ext4size=$(($disksize-$swapsize))
 
-echo $ext4size
+fdisk $diskname << FDISK
+g
+n
+1
+
++$((ext4size))MiB
+n
+2
+
+
+t
+1
+20
+t
+2
+19
+w
+FDISK
