@@ -2,10 +2,12 @@
 
 if [[ ! -f "/sys/firmware/efi/efivars" ]]
 then
-	echo "BIOS"
+	bootmode=0
 else
-	echo "UEFI"
+	bootmode=1
 fi
+
+echo "$bootmode"
 
 # get disks
 disksize=$(fdisk -l | grep /dev/sd* | awk -F " " {'print $5'})
