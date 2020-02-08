@@ -48,3 +48,11 @@ mkfs.ext4 "${diskname}1"
 
 mkswap "${diskname}2"
 swapon "${diskname}2"
+
+mount "${diskname}1" /mnt
+
+pacstrap /mnt base linux linux-firmware
+
+genfstab -U /mnt >> /mnt/etc/fstab
+
+arch-chroot /mnt
