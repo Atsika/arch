@@ -24,6 +24,7 @@ swapsize=$(free --si --mega | grep Mem | awk -F " " {'print $2'})
 
 ext4size=$(($disksize-$swapsize))
 
+
 fdisk $diskname << FDISK
 g
 n
@@ -42,3 +43,8 @@ t
 19
 w
 FDISK
+
+mkfs.ext4 "${diskname}1"
+
+mkswap "${diskname}2"
+swapon "${diskname}2"
