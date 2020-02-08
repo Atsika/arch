@@ -22,5 +22,3 @@ disksize=$(fdisk -l | grep $diskname | awk -F " " {'print $5'})
 
 # get ram size
 ramsize=$(free --si | grep Mem | awk -F " " {'print $2'})
-
-
