@@ -18,11 +18,10 @@ diskname="${diskname//:}"
 
 # get disk size
 disksize=$(fdisk -l | grep $diskname | awk -F " " {'print $5'})
-echo "$(($disksize/1048576))"
+disksize=$(($disksize/1048576)) # convert to MB
 # get ram size
-swapsize=$(free --si | grep Mem | awk -F " " {'print $2'})
-echo "$(($swapsize/1048576))"
+swapsize=$(free --si --mega | grep Mem | awk -F " " {'print $2'})
 
 ext4size=$(($disksize-$swapsize))
 
-
+echo $ext4size
