@@ -55,7 +55,7 @@ pacstrap /mnt base linux linux-firmware
 
 genfstab -U /mnt >> /mnt/etc/fstab
 
-arch-chroot /mnt
+arch-chroot /mnt /bin/bash << EOC
 
 ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime
 
@@ -74,3 +74,5 @@ echo "::1		localhost" >> /etc/hosts
 echo "127.0.1.1		linux.localdomain	linux" >> /etc/hosts
 
 echo -e "root\nroot" | (passwd root)
+
+EOC
