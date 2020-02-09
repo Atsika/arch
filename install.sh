@@ -101,32 +101,31 @@ fi
 
 genfstab -U /mnt >> /mnt/etc/fstab
 
-IN_CHROOT="ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime
-hwclock --systohc
-echo LANG=fr_FR.UTF-8 >> /etc/locale.conf
-export LANG=fr_FR.UTF-8
-echo KEYMAP=fr >> /etc/vconsole.conf
-locale-gen
-echo linux >> /etc/hostname
-echo \"127.0.0.1		localhost\" >> /etc/hosts
-echo \"::1			localhost\" >> /etc/hosts
-echo \"127.0.1.1		linux.localdomain	linux\" >> /etc/hosts
-echo -e \"root\nroot\" | (passwd root)
-if [ $BOOT_MODE = 0 ]
-then
-grub-install --target=i386-pc \"${DISK_NAME}\"
-else
-grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=\"Arch Linux\"
-fi
-grub-mkconfig -o /boot/grub/grub.cfg
-exit"
+IN_CHROOT="ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime\n
+hwclock --systohc\n
+echo LANG=fr_FR.UTF-8 >> /etc/locale.conf\n
+export LANG=fr_FR.UTF-8\n
+echo KEYMAP=fr >> /etc/vconsole.conf\n
+locale-gen\n
+echo linux >> /etc/hostname\n
+echo \"127.0.0.1		localhost\" >> /etc/hosts\n
+echo \"::1			localhost\" >> /etc/hosts\n
+echo \"127.0.1.1		linux.localdomain	linux\" >> /etc/hosts\n
+echo -e \"root\\nroot\" | (passwd root)\n
+if [ $BOOT_MODE = 0 ]\n
+then\n
+grub-install --target=i386-pc \"${DISK_NAME}\"\n
+else\n
+grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=\"Arch Linux\"\n
+fi\n
+grub-mkconfig -o /boot/grub/grub.cfg\n
+exit\n"
 
 # create script to execute in chroot
-echo $IN_CHROOT > /mnt/in_chroot.sh
+echo -e $IN_CHROOT > /mnt/in_chroot.sh
 
 # add execution to script
 chmod +x /mnt/in_chroot.sh
 
 # chroot and exec in it
 arch-chroot /mnt ./in_chroot.sh
-
