@@ -61,6 +61,11 @@ else
 	fi
 fi
 
+if [ $BOOT_MODE = 1 ]
+then
+	mkfs.fat -F32 "${DISK_NAME}1"
+fi
+
 mkfs.ext4 "${DISK_NAME}2"
 
 if [ $SWAP = 1 ]
@@ -69,11 +74,13 @@ then
 	swapon "${DISK_NAME}3"
 fi
 
-mount "${INS_DISK_NAME}2" /mnt
+partprobe $DISK_NAME
+
+mount "${DISK_NAME}2" /mnt
 if [ $BOOT_MODE = 1 ]
 then
     mkdir -p /mnt/efi
-    mount "${INS_DISK_NAME}1" /mnt/efi
+    mount "${DISK_NAME}1" /mnt/efi
 fi
 
 if [ $BOOT_MODE = 0 ]
