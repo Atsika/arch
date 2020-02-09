@@ -121,5 +121,7 @@ fi
 grub-mkconfig -o /boot/grub/grub.cfg
 exit"
 
+echo $IN_CHROOT
+
 # chroot and exec in it
 arch-chroot /mnt /bin/bash << $IN_CHROOT
