@@ -124,4 +124,4 @@ exit"
 echo $IN_CHROOT
 
 # chroot and exec in it
-arch-chroot /mnt /bin/bash << $IN_CHROOT
+arch-chroot /mnt /bin/bash << $((IN_CHROOT))
