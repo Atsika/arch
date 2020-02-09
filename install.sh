@@ -31,12 +31,12 @@ SWAP_SIZE=$(free --si --mega | grep Mem | awk -F " " {'print $2'})
 # get partition size
 ROOT_SIZE=$(($DISK_SIZE-$SWAP_SIZE-512))
 
-if [ $ROOT_SIZE < 2000 ]
+if [ $ROOT_SIZE < 2000 ] # if not enough space, forget about swap
 then
 	ROOT_SIZE=$(($DISK_SIZE-512))
-	SWAP=0
+	SWAP=0 # swap flag set to 0 means no swap
 else
-	SWAP=1
+	SWAP=1 # 1 means swap partition
 fi
 
 # wipe disk
@@ -44,15 +44,15 @@ wipefs -a $DISK_NAME
 partprobe $DISK_NAME
 
 # partition disk
-if [ $BOOT_MODE = 0 ]
+if [ $BOOT_MODE = 0 ] # if boot mode is BIOS
 then
-	if [ $SWAP = 1 ]
+	if [ $SWAP = 1 ] # if we can afford a swap partiton
 	then
 		echo -e "g\nn\n\n\n+1M\nn\n\n\n+$((ROOT_SIZE))M\nn\n\n\n\nt\n1\n4\nt\n2\n20\nt\n3\n19\nw\n" | fdisk $DISK_NAME
 	else
 		echo -e "g\nn\n\n\n+1M\nn\n\n\n\n\nt\n1\n4\nt\n2\n20\nw\n" | fdisk $DISK_NAME 
 	fi
-else
+else # if boot mode is UEFI
 	if [ $SWAP = 1 ]
 	then
 		echo -e "g\nn\n\n\n+512M\nn\n\n\n+$((ROOT_SIZE))M\nn\n\n\n\nt\n1\n1\nt\n2\n20\nt\n3\n19\nw\n" | fdisk $DISK_NAME
@@ -61,7 +61,7 @@ else
 	fi
 fi
 
-if [ $BOOT_MODE = 1 ]
+if [ $BOOT_MODE = 1 ] # if boot mode is UEFI
 then
 	mkfs.fat -F32 "${DISK_NAME}1"
 fi
@@ -74,8 +74,9 @@ then
 	swapon "${DISK_NAME}3"
 fi
 
-partprobe $DISK_NAME
+partprobe $DISK_NAME # inform system about partition changes
 
+# mount
 mount "${DISK_NAME}2" /mnt
 if [ $BOOT_MODE = 1 ]
 then
@@ -83,6 +84,7 @@ then
     mount "${DISK_NAME}1" /mnt/efi
 fi
 
+# bootstraping
 if [ $BOOT_MODE = 0 ]
 then
 	pacstrap /mnt base linux linux-firmware grub dhcpcd
@@ -92,6 +94,7 @@ fi
 
 genfstab -U /mnt >> /mnt/etc/fstab
 
+# chroot and exec in it
 arch-chroot /mnt /bin/bash << EOC
 ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime
 hwclock --systohc
