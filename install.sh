@@ -26,14 +26,21 @@ then
 	exit
 fi
 
+if [ $BOOT_MODE = 0 ]
+then
+	BOOT_SIZE=1
+else
+	BOOT_SIZE=512
+fi
+
 # get ram size
 SWAP_SIZE=$(free --si --mega | grep Mem | awk -F " " {'print $2'})
 # get partition size
-ROOT_SIZE=$(($DISK_SIZE-$SWAP_SIZE-512))
+ROOT_SIZE=$(($DISK_SIZE-$SWAP_SIZE-$BOOT_SIZE))
 
 if [ $ROOT_SIZE < 2000 ] # if not enough space, forget about swap
 then
-	ROOT_SIZE=$(($DISK_SIZE-512))
+	ROOT_SIZE=$(($DISK_SIZE-$BOOT_SIZE))
 	SWAP=0 # swap flag set to 0 means no swap
 else
 	SWAP=1 # 1 means swap partition
@@ -48,16 +55,16 @@ if [ $BOOT_MODE = 0 ] # if boot mode is BIOS
 then
 	if [ $SWAP = 1 ] # if we can afford a swap partiton
 	then
-		echo -e "g\nn\n\n\n+1M\nn\n\n\n+$((ROOT_SIZE))M\nn\n\n\n\nt\n1\n4\nt\n2\n20\nt\n3\n19\nw\n" | fdisk $DISK_NAME
+		echo -e "g\nn\n\n\n+$((BOOT_SIZE))M\nn\n\n\n+$((ROOT_SIZE))M\nn\n\n\n\nt\n1\n4\nt\n2\n20\nt\n3\n19\nw\n" | fdisk $DISK_NAME
 	else
-		echo -e "g\nn\n\n\n+1M\nn\n\n\n\n\nt\n1\n4\nt\n2\n20\nw\n" | fdisk $DISK_NAME 
+		echo -e "g\nn\n\n\n+$((BOOT_SIZE))M\nn\n\n\n\n\nt\n1\n4\nt\n2\n20\nw\n" | fdisk $DISK_NAME 
 	fi
 else # if boot mode is UEFI
 	if [ $SWAP = 1 ]
 	then
-		echo -e "g\nn\n\n\n+512M\nn\n\n\n+$((ROOT_SIZE))M\nn\n\n\n\nt\n1\n1\nt\n2\n20\nt\n3\n19\nw\n" | fdisk $DISK_NAME
+		echo -e "g\nn\n\n\n+$((BOOT_SIZE))M\nn\n\n\n+$((ROOT_SIZE))M\nn\n\n\n\nt\n1\n1\nt\n2\n20\nt\n3\n19\nw\n" | fdisk $DISK_NAME
 	else
-		echo -e "g\nn\n\n\n+512M\nn\n\n\n\n\nt\n1\n1\nt\n2\n20\nw\n" | fdisk $DISK_NAME 
+		echo -e "g\nn\n\n\n+$((BOOT_SIZE))M\nn\n\n\n\n\nt\n1\n1\nt\n2\n20\nw\n" | fdisk $DISK_NAME 
 	fi
 fi
 
