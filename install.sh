@@ -12,9 +12,7 @@ fi
 timedatectl set-ntp true
 
 # get disk name
-DISK_NAME=$(fdisk -l | grep /dev/sd* | awk -F " " {'print $2'})
-# remove the ":" after name
-DISK_NAME="${DISK_NAME//:}"
+DISK_NAME=$(fdisk -l | sed -n '1p' | awk -F " " {'print $2'} | sed 's/://')
 
 # get disk size
 DISK_SIZE=$(fdisk -l | grep $DISK_NAME | awk -F " " {'print $5'})
