@@ -16,7 +16,7 @@ DISK_NAME=$(fdisk -l | sed -n '1p' | awk -F " " {'print $2'} | sed 's/://')
 
 # get disk size
 DISK_SIZE=$(fdisk -l | grep $DISK_NAME | awk -F " " {'print $5'})
-DISK_SIZE=$(($DISK_SIZE/1048576)) # convert to MB
+DISK_SIZE=$(($DISK_SIZE/(1024*1024))) # convert to MB
 # check disk size
 if [ $DISK_SIZE < 2000 ]
 then
