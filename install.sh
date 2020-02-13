@@ -36,7 +36,7 @@ SWAP_SIZE=$(free --si --mega | grep Mem | awk -F " " {'print $2'})
 # get partition size
 ROOT_SIZE=$(($DISK_SIZE-$SWAP_SIZE-$BOOT_SIZE))
 
-if [ $ROOT_SIZE < 2000 ] # if not enough space, forget about swap
+if [ $ROOT_SIZE < 2000 || $SWAP_SIZE > $ROOT_SIZE ] # if not enough space, forget about swap
 then
 	ROOT_SIZE=$(($DISK_SIZE-$BOOT_SIZE))
 	SWAP=0 # swap flag set to 0 means no swap
