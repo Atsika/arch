@@ -124,7 +124,7 @@ echo linux >> /etc/hostname\n
 echo \"127.0.0.1		localhost\" >> /etc/hosts\n
 echo \"::1			localhost\" >> /etc/hosts\n
 echo \"127.0.1.1		linux.localdomain	linux\" >> /etc/hosts\n
-useradd arch\n
+useradd -m arch\n
 echo -e \"arch\\narch\" | (passwd arch)\n
 echo -e \"root\\nroot\" | (passwd root)\n
 if [ $BOOT_MODE = 0 ]\n
