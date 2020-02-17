@@ -1,7 +1,7 @@
 #! /bin/bash
 
 #check boot mode (BIOS=0, UEFI=1)
-if [ ! -f "/sys/firmware/efi/efivars" ]
+if [ ! -e "/sys/firmware/efi/efivars" ]
 then
 	BOOT_MODE=0
 else
