@@ -116,6 +116,7 @@ genfstab -U /mnt >> /mnt/etc/fstab
 IN_CHROOT="ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime\n
 hwclock --systohc\n
 echo LANG=fr_FR.UTF-8 >> /etc/locale.conf\n
+echo fr_FR.UTF8 UTF8 >> /etc/locale.gen\n
 export LANG=fr_FR.UTF-8\n
 echo KEYMAP=fr >> /etc/vconsole.conf\n
 locale-gen\n
@@ -123,6 +124,8 @@ echo linux >> /etc/hostname\n
 echo \"127.0.0.1		localhost\" >> /etc/hosts\n
 echo \"::1			localhost\" >> /etc/hosts\n
 echo \"127.0.1.1		linux.localdomain	linux\" >> /etc/hosts\n
+useradd arch\n
+echo -e \"arch\\narch\" | (passwd arch)\n
 echo -e \"root\\nroot\" | (passwd root)\n
 if [ $BOOT_MODE = 0 ]\n
 then\n
