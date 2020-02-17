@@ -50,7 +50,7 @@ fi
 # get / partition size
 ROOT_SIZE=$(($DISK_SIZE-$SWAP_SIZE-$BOOT_SIZE))
 
-if [ $ROOT_SIZE < 2000 || $SWAP_SIZE > $ROOT_SIZE || SWAP_SIZE -eq 0 ] # if not enough space, forget about swap
+if [ $ROOT_SIZE -lt 2000 || $SWAP_SIZE -gt $ROOT_SIZE || SWAP_SIZE -eq 0 ] # if not enough space, forget about swap
 then
 	ROOT_SIZE=$(($DISK_SIZE-$BOOT_SIZE))
 	SWAP=0 # swap flag set to 0 means no swap
