@@ -18,13 +18,13 @@ DISK_NAME=$(fdisk -l | sed -n '1p' | awk -F " " {'print $2'} | sed 's/://')
 DISK_SIZE=$(fdisk -l | grep $DISK_NAME | awk -F " " {'print $5'})
 DISK_SIZE=$(($DISK_SIZE/(1024*1024))) # convert to MB
 # check disk size
-if [ $DISK_SIZE < 2000 ]
+if [ $DISK_SIZE -lt 2000 ]
 then
 	echo "Not enough space on disk"
 	exit
 fi
 
-if [ $BOOT_MODE = 0 ]
+if [ $BOOT_MODE -eq 0 ]
 then
 	BOOT_SIZE=1
 else
@@ -32,11 +32,23 @@ else
 fi
 
 # get ram size
-SWAP_SIZE=$(free --si --mega | grep Mem | awk -F " " {'print $2'})
-# get partition size
+RAM=$(free --si --mega | grep Mem | awk -F " " {'print $2'})
+
+# get swap size
+if [ $RAM -le 2000 ]
+then
+	SWAP_SIZE=$(($RAM*2))
+elif [ $RAM -le 8000 ]
+then
+	SWAP_SIZE=$RAM
+else
+	SWAP_SIZE=0
+fi
+
+# get / partition size
 ROOT_SIZE=$(($DISK_SIZE-$SWAP_SIZE-$BOOT_SIZE))
 
-if [ $ROOT_SIZE < 2000 || $SWAP_SIZE > $ROOT_SIZE ] # if not enough space, forget about swap
+if [ $ROOT_SIZE < 2000 || $SWAP_SIZE > $ROOT_SIZE || SWAP_SIZE -eq 0 ] # if not enough space, forget about swap
 then
 	ROOT_SIZE=$(($DISK_SIZE-$BOOT_SIZE))
 	SWAP=0 # swap flag set to 0 means no swap
@@ -49,16 +61,16 @@ wipefs -a $DISK_NAME
 partprobe $DISK_NAME
 
 # partition disk
-if [ $BOOT_MODE = 0 ] # if boot mode is BIOS
+if [ $BOOT_MODE -eq 0 ] # if boot mode is BIOS
 then
-	if [ $SWAP = 1 ] # if we can afford a swap partiton
+	if [ $SWAP -eq 1 ] # if we can afford a swap partiton
 	then
 		echo -e "g\nn\n\n\n+$((BOOT_SIZE))M\nn\n\n\n+$((ROOT_SIZE))M\nn\n\n\n\nt\n1\n4\nt\n2\n20\nt\n3\n19\nw\n" | fdisk $DISK_NAME
 	else
 		echo -e "g\nn\n\n\n+$((BOOT_SIZE))M\nn\n\n\n\n\nt\n1\n4\nt\n2\n20\nw\n" | fdisk $DISK_NAME 
 	fi
 else # if boot mode is UEFI
-	if [ $SWAP = 1 ]
+	if [ $SWAP -eq 1 ]
 	then
 		echo -e "g\nn\n\n\n+$((BOOT_SIZE))M\nn\n\n\n+$((ROOT_SIZE))M\nn\n\n\n\nt\n1\n1\nt\n2\n20\nt\n3\n19\nw\n" | fdisk $DISK_NAME
 	else
@@ -66,14 +78,14 @@ else # if boot mode is UEFI
 	fi
 fi
 
-if [ $BOOT_MODE = 1 ] # if boot mode is UEFI
+if [ $BOOT_MODE -eq 1 ] # if boot mode is UEFI
 then
 	mkfs.fat -F32 "${DISK_NAME}1"
 fi
 
 mkfs.ext4 "${DISK_NAME}2"
 
-if [ $SWAP = 1 ]
+if [ $SWAP -eq 1 ]
 then
 	mkswap "${DISK_NAME}3"
 	swapon "${DISK_NAME}3"
@@ -83,14 +95,14 @@ partprobe $DISK_NAME # inform system about partition changes
 
 # mount
 mount "${DISK_NAME}2" /mnt
-if [ $BOOT_MODE = 1 ]
+if [ $BOOT_MODE -eq 1 ]
 then
     mkdir -p /mnt/efi
     mount "${DISK_NAME}1" /mnt/efi
 fi
 
 # bootstraping
-if [ $BOOT_MODE = 0 ]
+if [ $BOOT_MODE -eq 0 ]
 then
 	pacstrap /mnt base linux linux-firmware grub dhcpcd
 else
