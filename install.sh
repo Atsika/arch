@@ -18,7 +18,7 @@ DISK_NAME=$(fdisk -l | sed -n '1p' | awk -F " " {'print $2'} | sed 's/://')
 DISK_SIZE=$(fdisk -l | grep $DISK_NAME | awk -F " " {'print $5'})
 DISK_SIZE=$(($DISK_SIZE/(1024*1024))) # convert to MB
 # check disk size
-if [ $DISK_SIZE -lt 2000 ]
+if [ $DISK_SIZE < 2000 ]
 then
 	echo "Not enough space on disk"
 	exit
@@ -35,13 +35,13 @@ fi
 RAM=$(free --si --mega | grep Mem | awk -F " " {'print $2'})
 
 # get swap size
-if [ $RAM -le 2000 ]
+if [ $RAM <= 2000 ]
 then
 	SWAP_SIZE=$(($RAM*2))
-elif [ $RAM -le 8000 ]
+elif [ $RAM <= 8000 ]
 then
 	SWAP_SIZE=$RAM
-elif [ $RAM -lt 16000 ]
+elif [ $RAM < 16000 ]
 	SWAP_SIZE=$(($RAM/2))
 else
 	SWAP_SIZE=0
@@ -50,7 +50,7 @@ fi
 # get / partition size
 ROOT_SIZE=$(($DISK_SIZE-$SWAP_SIZE-$BOOT_SIZE))
 
-if [ $ROOT_SIZE -lt 2000 || $SWAP_SIZE -gt $ROOT_SIZE || SWAP_SIZE -eq 0 ] # if not enough space, forget about swap
+if [ $ROOT_SIZE < 2000 || $SWAP_SIZE > $ROOT_SIZE || SWAP_SIZE -eq 0 ] # if not enough space, forget about swap
 then
 	ROOT_SIZE=$(($DISK_SIZE-$BOOT_SIZE))
 	SWAP=0 # swap flag set to 0 means no swap
