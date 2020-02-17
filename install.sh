@@ -116,7 +116,7 @@ genfstab -U /mnt >> /mnt/etc/fstab
 IN_CHROOT="ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime\n
 hwclock --systohc\n
 echo LANG=fr_FR.UTF-8 >> /etc/locale.conf\n
-sed -i \'s/#fr_FR.UTF-8 UTF-8/fr_FR.UTF-8 UTF-8/g\' /etc/locale.gen\n
+sed -i 's/#fr_FR.UTF-8 UTF-8/fr_FR.UTF-8 UTF-8/g' /etc/locale.gen\n
 export LANG=fr_FR.UTF-8\n
 echo KEYMAP=fr >> /etc/vconsole.conf\n
 locale-gen\n
