@@ -106,9 +106,9 @@ fi
 # bootstraping
 if [ $BOOT_MODE -eq 0 ]
 then
-	pacstrap /mnt base linux linux-firmware grub dhcpcd
+	pacstrap /mnt base linux linux-firmware grub dhcpcd vim
 else
-	pacstrap /mnt base linux linux-firmware grub dhcpcd efibootmgr
+	pacstrap /mnt base linux linux-firmware grub dhcpcd vim efibootmgr
 fi
 
 genfstab -U /mnt >> /mnt/etc/fstab
