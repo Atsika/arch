@@ -41,6 +41,8 @@ then
 elif [ $RAM -le 8000 ]
 then
 	SWAP_SIZE=$RAM
+elif [ $RAM -lt 16000 ]
+	SWAP_SIZE=$(($RAM/2))
 else
 	SWAP_SIZE=0
 fi
