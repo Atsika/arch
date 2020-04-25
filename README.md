@@ -1,4 +1,4 @@
-![arch.png](arch.png)
+![arch.png](arch.png)  
 Bash script to auto install Arch Linux  
 
 ### Installation
