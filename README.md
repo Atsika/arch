@@ -2,7 +2,7 @@
   <img src="arch.png">
 </p>
 
-Bash script to auto install Arch Linux  
+# Bash script to auto install Arch Linux  
 
 ### Installation
 Clone the repo.
