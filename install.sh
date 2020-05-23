@@ -106,9 +106,9 @@ fi
 # bootstraping
 if [ $BOOT_MODE -eq 0 ]
 then
-	pacstrap /mnt base linux linux-firmware grub dhcpcd vim
+	pacstrap /mnt base linux linux-firmware grub dhcpcd vim openssh
 else
-	pacstrap /mnt base linux linux-firmware grub dhcpcd vim efibootmgr
+	pacstrap /mnt base linux linux-firmware grub dhcpcd vim openssh efibootmgr
 fi
 
 genfstab -U /mnt >> /mnt/etc/fstab
@@ -134,6 +134,15 @@ else\n
 grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=\"Arch Linux\"\n
 fi\n
 grub-mkconfig -o /boot/grub/grub.cfg\n
+iptables -t filter -P INPUT DROP\n
+iptables -t filter -P OUTPUT DROP\n
+iptables -t filter -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT\n
+iptables -t filter -A OUTPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT\n
+iptables -t filter -A INPUT -p tcp --dport 22 -j ACCEPT\n
+iptables -t filter -A OUTPUT -p udp --dport 53 -j ACCEPT\n
+iptables -t filter -A OUTPUT -p tcp --dport 80 -j ACCEPT\n
+iptables -t filter -A OUTPUT -p tcp --dport 443 -j ACCEPT\n
+iptables-save > /etc/iptables/rules.v4\n
 exit\n"
 
 # create script to execute in chroot
