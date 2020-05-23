@@ -144,6 +144,7 @@ iptables -t filter -A OUTPUT -p tcp --dport 80 -j ACCEPT\n
 iptables -t filter -A OUTPUT -p tcp --dport 443 -j ACCEPT\n
 iptables-save > /etc/iptables/rules.v4\n
 systemctl enable sshd
+systemctl enable dhcpcd
 exit\n"
 
 # create script to execute in chroot
