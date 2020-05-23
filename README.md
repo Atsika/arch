@@ -1,4 +1,7 @@
-![arch.png](arch.png)  
+<p align=center>
+  <img src="arch.png">
+</p>
+
 Bash script to auto install Arch Linux  
 
 ### Installation
