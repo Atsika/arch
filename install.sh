@@ -142,7 +142,7 @@ iptables -t filter -A INPUT -p tcp --dport 22 -j ACCEPT\n
 iptables -t filter -A OUTPUT -p udp --dport 53 -j ACCEPT\n
 iptables -t filter -A OUTPUT -p tcp --dport 80 -j ACCEPT\n
 iptables -t filter -A OUTPUT -p tcp --dport 443 -j ACCEPT\n
-iptables-save > /etc/iptables/rules.v4\n
+iptables-save -f /etc/iptables/rules.v4\n
 systemctl enable sshd
 systemctl enable dhcpcd
 exit\n"
